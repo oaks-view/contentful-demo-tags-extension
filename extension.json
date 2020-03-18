@@ -1,0 +1,6 @@
+{
+  "id": "contentful-demo-tags-extension",
+  "name": "contentful-demo-tags-extension",
+  "srcdoc": "./build/index.html",
+  "sidebar": true
+}
