@@ -1,7 +1,9 @@
+/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
 import React from 'react';
 import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
-import { Button } from '@contentful/forma-36-react-components';
+import { Button, SectionHeading, Icon, Paragraph } from '@contentful/forma-36-react-components';
 import { init, locations } from 'contentful-ui-extensions-sdk';
 import tokens from '@contentful/forma-36-tokens';
 import '@contentful/forma-36-react-components/dist/styles.css';
@@ -33,6 +35,64 @@ export class SidebarExtension extends React.Component {
     sdk: PropTypes.object.isRequired
   };
 
+  constructor(props) {
+    super(props);
+
+    this.supportedTags = [
+      {
+        name: 'Box',
+        description:
+          'Used to as a regular html div. It is useful if you want to display a simple element. Theres a code snippet below and it has the following kid of contents as shpwn below',
+        snippet: (
+          <div>
+            {`<Box>
+                Hello, I am a simple box
+            </Box>`}
+          </div>
+        ),
+        properties: {
+          type: {
+            description: 'Decides if it is of type "flex", "block" etc. The default is "block"',
+            required: false,
+            acceptedValues: [
+              { flex: 'Children are arranged in a flexbox' },
+              { block: 'Displays as a simple block elemennt' }
+            ],
+            default: 'flex'
+          },
+          orientation: {
+            description:
+              'Used to specify if Box would arrange children horizontally or as a stack. Defaults to "Column"',
+            required: false,
+            acceptedValues: [
+              { column: 'Children are arranged in a Stack' },
+              { row: 'Children are arrannged side by side' }
+            ],
+            default: 'row'
+          }
+        }
+      },
+      {
+        name: 'Link',
+        description:
+          'Used to include a reference to an external resource / page or some where within the current page or site',
+        snippet: (
+          <div>
+            {`<Link href="//facebook.movinga.com">
+                Checkout Movinga on facebook!!
+            </Link>`}
+          </div>
+        ),
+        properties: {
+        }
+      },
+    ];
+
+    this.state = {
+      selectedTag: null
+    };
+  }
+
   componentDidMount() {
     this.props.sdk.window.startAutoResizer();
   }
@@ -45,15 +105,52 @@ export class SidebarExtension extends React.Component {
     console.log(result);
   };
 
+  onTagSelected = tagIndex => {
+    this.setState({ selectedTag: this.supportedTags[tagIndex] });
+  };
+
   render() {
     return (
-      <Button
-        buttonType="positive"
-        isFullWidth={true}
-        testId="open-dialog"
-        onClick={this.onButtonClick}>
-        Click on me to open dialog extension
-      </Button>
+      <div style={{ maxHeight: '299px', minHeight: '299px' }}>
+        <SectionHeading>Supported Tags</SectionHeading>
+        {!this.state.selectedTag && (
+          <ul>
+            {this.supportedTags.map((tag, i) => (
+              <li
+                key={i}
+                onClick={() => this.setState({ selectedTag: this.supportedTags[i] })}
+                style={{
+                  textDecoration: 'underline',
+                  color: 'red',
+                  marginBottom: '8px',
+                  cursor: 'pointer'
+                }}>{`<${tag.name}>`}</li>
+            ))}
+          </ul>
+        )}
+
+        {this.state.selectedTag && (
+          <div>
+            <p
+              style={{
+                color: 'red',
+                marginBottom: '8px',
+                cursor: 'pointer'
+              }}>
+              <Button
+                onClick={() => this.setState({ selectedTag: null })}
+                buttonType="naked"
+                style={{ display: 'inline-flex', justifyContent: 'center', alignItems: 'center' }}>
+                <Icon color="primary" size="large" icon="ChevronLeft" />
+              </Button>
+              {`<${this.state.selectedTag.name}>`}
+            </p>
+            <Paragraph>{this.state.selectedTag.description}</Paragraph>
+            
+            <code style={{ padding: '4rem' }}>{this.state.selectedTag.snippet}</code>
+          </div>
+        )}
+      </div>
     );
   }
 }
