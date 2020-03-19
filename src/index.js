@@ -3,7 +3,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
-import { Button, SectionHeading, Icon, Paragraph } from '@contentful/forma-36-react-components';
+import {
+  Button,
+  SectionHeading,
+  Icon,
+  Paragraph,
+  Subheading,
+  HelpText
+} from '@contentful/forma-36-react-components';
 import { init, locations } from 'contentful-ui-extensions-sdk';
 import tokens from '@contentful/forma-36-tokens';
 import '@contentful/forma-36-react-components/dist/styles.css';
@@ -42,7 +49,7 @@ export class SidebarExtension extends React.Component {
       {
         name: 'Box',
         description:
-          'Used to as a regular html div. It is useful if you want to display a simple element. Theres a code snippet below and it has the following kid of contents as shpwn below',
+          'Used to as a regular html div. It is useful if you want to display a simple element and apply a few styles. The code snippet shows an example usage',
         snippet: (
           <div>
             {`<Box>
@@ -50,17 +57,19 @@ export class SidebarExtension extends React.Component {
             </Box>`}
           </div>
         ),
-        properties: {
-          type: {
+        properties: [
+          {
+            name: 'type',
             description: 'Decides if it is of type "flex", "block" etc. The default is "block"',
-            required: false,
+            required: true,
             acceptedValues: [
               { flex: 'Children are arranged in a flexbox' },
               { block: 'Displays as a simple block elemennt' }
             ],
             default: 'flex'
           },
-          orientation: {
+          {
+            name: 'orientation',
             description:
               'Used to specify if Box would arrange children horizontally or as a stack. Defaults to "Column"',
             required: false,
@@ -70,7 +79,7 @@ export class SidebarExtension extends React.Component {
             ],
             default: 'row'
           }
-        }
+        ]
       },
       {
         name: 'Link',
@@ -83,9 +92,8 @@ export class SidebarExtension extends React.Component {
             </Link>`}
           </div>
         ),
-        properties: {
-        }
-      },
+        properties: []
+      }
     ];
 
     this.state = {
@@ -103,10 +111,6 @@ export class SidebarExtension extends React.Component {
       title: 'The same extension rendered in modal window'
     });
     console.log(result);
-  };
-
-  onTagSelected = tagIndex => {
-    this.setState({ selectedTag: this.supportedTags[tagIndex] });
   };
 
   render() {
@@ -146,8 +150,18 @@ export class SidebarExtension extends React.Component {
               {`<${this.state.selectedTag.name}>`}
             </p>
             <Paragraph>{this.state.selectedTag.description}</Paragraph>
-            
+
             <code style={{ padding: '4rem' }}>{this.state.selectedTag.snippet}</code>
+
+            <Subheading style={{ color: '#3c80cf' }}>Properties</Subheading>
+            {this.state.selectedTag.properties.map((property, i) => (
+              <div key={i} style={{ marginBottom: '10px' }}>
+                <Paragraph style={{ backgroundColor: '#e5ebed', display: 'inline-block' }}>
+                  {property.name}
+                  {property.required && <HelpText style={{ color: 'red', display: 'inline', marginLeft: '5px' }}>(Required)</HelpText>}
+                </Paragraph>
+              </div>
+            ))}
           </div>
         )}
       </div>
