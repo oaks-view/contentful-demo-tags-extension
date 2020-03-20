@@ -12,4 +12,4 @@ To setup and run this project it is required to have nodejs and npm installed. O
 2. Start the development server with the following command
     `npm run start`
 
-To deploy simply execute te command `npm run deploy`
+To deploy simply execute the command `npm run deploy`
